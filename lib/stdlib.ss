@@ -27,25 +27,66 @@
 (define (cdddar x) (cdr (cdr (cdr (car x)))))
 (define (cddddr x) (cdr (cdr (cdr (cdr x)))))
 
-(define (first l) (car l))
-(define (rest l)  (cdr l))
-(define (empty? l) (null? l))
-(define (list? l) (pair? l))
+(define first car)
+(define rest cdr)
+(define empty? null?)
+(define list? pair?)
+(define cons? pair?)
+(define empty '())
+(define equal? eq?)
+
 (define (not b) (if b #f #t))
+(define true #t)
+(define false #f)
 
 (define (add1 n) (+ n 1))
 (define (sub1 n) (- n 1))
 
-(define empty '())
-(define true #t)
-(define false #f)
+(define (positive? n) (> n 0))
+(define (negative? n) (< n 0))
+(define (zero? n) (= n 0))
+(define (even? n) (= (% n 2) 0))
+(define (odd? n) (not (even? n)))
+
+(define (foldr f init l)
+	(cond 
+		((empty? l) init)
+		(else (f (first l) (foldr f init (rest l))))))
+		
+(define (foldl init l)
+	(cond
+		((empty? l) init)
+		(foldl f (f init (first l)) (rest l))))
+
+(define fold foldl)
+(define reduce fold)
 
 (define (map f l)
-	(cond
-		((empty? l) empty)
-		(else (cons (f (first l))
-					(map f (rest l))))))
-					
+  (foldr (lambda (v l) (cons (f v) l)) empty l))
+  
+(define (filter f l)
+  (foldr (lambda (v l)
+           (cond
+             ((not (f v)) l)
+             (else (cons v l)))) empty l))
+             
+(define (flip f)
+	(lambda (x y) (f y x)))
+             
+(define append 
+	(lambda (x y)
+		(foldr cons y x)))
+             
+(define (flatten l)
+  (filter (lambda (x) (not (empty? x)))
+           (cond
+             [(empty? l) empty]
+             [(cons? (first l)) (append (flatten (first l)) (flatten (rest l)))]
+             [else (cons (first l) (flatten (rest l)))])))
+
+(define (reverse l)
+	(foldl (flip cons) empty l))
+
 (define (count l)
 	(cond
 		((empty? l) 0)
@@ -56,3 +97,36 @@
 		((empty? l) false)
 		((eq? m (first l)) true)
 		(else (member m (rest l)))))
+		
+(define (take l n)
+	(cond
+		((zero? n) empty)
+		(else  (cond
+					((empty? l) empty)
+					(else (cons (first l) (take (rest l) (sub1 n))))))))
+					
+(define (drop l n) 
+	(take (reverse l) n))
+		
+	
+'stdlib-loaded
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
