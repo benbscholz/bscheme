@@ -13,7 +13,7 @@ int main(void) {
 	
 	for (;;) {
 		printf("[scheme][~] ");
-		load_proc(cons(make_string("stdlib.ss"), the_empty_list));
+		load_proc(cons(make_string("../lib/stdlib.ss"), the_empty_list));
         exp = read(stdin);
         if (exp == NULL) {
             break;
