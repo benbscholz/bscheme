@@ -7,7 +7,8 @@ object *read(FILE *in);
 char is_delimiter(int c) {
 	return isspace(c) || c == EOF ||
 		   c == '('   || c == ')' ||
-		   c == '"'   || c == ';';
+		   c == '"'   || c == ';' ||
+		   c == '['   || c == ']';
 }
 
 char is_initial(int c) {
@@ -89,7 +90,7 @@ object *read_pair(FILE *in) {
 	eat_whitespace(in);
 	c = getc(in);
 	
-	if (c == ')') {
+	if (c == ')' || c == ']') {
 		return the_empty_list;
 	}
 	ungetc(c, in);
@@ -108,7 +109,7 @@ object *read_pair(FILE *in) {
 		cdr_obj = read(in);
 		eat_whitespace(in);
 		c = getc(in);
-		if (c != ')') {
+		if (c != ')' || c!= ']') {
 			crash_error("missing trailing right paren");
 		}
 		return cons(car_obj, cdr_obj);
@@ -195,7 +196,7 @@ object *read(FILE *in) {
 		}
 		buffer[i] = '\0';
 		return make_string(buffer);
-	} else if (c == '(') {
+	} else if (c == '(' || c == '[') {
 		return read_pair(in);
 	} else if (c == '\'') {
 		return cons(quote_symbol, cons(read(in), the_empty_list));
