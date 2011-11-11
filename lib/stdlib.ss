@@ -109,6 +109,12 @@
 (define (drop l n) 
 	(take (reverse l) n))
 	
+(define (build-list n)
+	(if (> n 0) (append (build-list (sub1 n)) (list n))
+				empty))
+
+(define bl build-list)
+
 (define test (list 1 2 3 4 5 6 7 8 9
 				   10 11 12 13 14 15
 				   16 17 18 19 20 21
@@ -120,6 +126,10 @@
 				   52 53 54 55 56 57
 				   58 59 60 61 62 63
 				   64 65 66 67 68 69))
+				   
+(define sl string->list)
+(define ls list->string)
+(define clist (list #\a #\b #\c))
 				   
 	
 'stdlib-loaded

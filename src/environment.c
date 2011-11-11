@@ -151,6 +151,8 @@ void populate_environment(object *env) {
     add_procedure("string->number", string_to_number_proc);
     add_procedure("symbol->string", symbol_to_string_proc);
     add_procedure("string->symbol", string_to_symbol_proc);
+    add_procedure("string->list", string_to_list_proc);
+    add_procedure("list->string", list_to_string_proc);
       
     add_procedure("+" , add_proc);
     add_procedure("-" , sub_proc);

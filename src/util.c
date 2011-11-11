@@ -309,6 +309,36 @@ object *string_to_symbol_proc(object *arguments) {
     return make_symbol((car(arguments))->data.string.value);
 }
 
+object *string_to_list_proc(object *arguments) {
+	const char *str = arguments->data.string.value;
+	object *list = the_empty_list;
+	object *curr;
+	int pos;
+	
+	for (pos = strlen(str); str > 0; --str) {
+		list = cons(make_character(str[pos - 1]), list);
+		
+		while (!is_the_empty_list(curr)) {
+			
+		}
+	}
+	return list;
+}
+
+object *list_to_string_proc(object *arguments) {
+	char str[BUFFER_MAX];
+	object *list = car(arguments);
+	int i;
+	
+	while (!is_the_empty_list(list) && i < BUFFER_MAX) {
+		str[i] = car(list)->data.character.value;
+		list = cdr(list);
+		i++;
+	}
+	str[i] = '\0';
+	return make_string(str);
+}
+
 object *add_proc(object *arguments) {
     long result = 0;
     
@@ -510,19 +540,7 @@ object *reload_proc(object *arguments) {
 }
 
 object *time_proc(object *arguments) {
-	int bt; 
-	int st;
-	object *out;
-	double exec_time;
-
-	bt = time(NULL);
-	out = car(arguments);
-	st = time(NULL);
-	
-	exec_time = difftime(bt, st);
-	printf("%f seconds.\n", exec_time);
-
-	return out;
+	return car(arguments);
 }
 
 

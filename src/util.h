@@ -67,6 +67,8 @@ object *number_to_string_proc(object *arguments);
 object *string_to_number_proc(object *arguments);
 object *symbol_to_string_proc(object *arguments);
 object *string_to_symbol_proc(object *arguments);
+object *string_to_list_proc(object *arguments);
+object *list_to_string_proc(object *arguments);
 
 object *add_proc(object *arguments);
 object *sub_proc(object *arguments);
