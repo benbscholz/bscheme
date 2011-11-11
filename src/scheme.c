@@ -11,9 +11,12 @@ int main(void) {
 	
 	init();
 	
+	write(stdout, load_proc(cons(make_string("../lib/stdlib.ss"), the_empty_list)));
+	printf("\n");		
+	
 	for (;;) {
-		printf("[scheme][~] ");
-		load_proc(cons(make_string("../lib/stdlib.ss"), the_empty_list));
+		printf("[scheme][λ] ");
+		
         exp = read(stdin);
         if (exp == NULL) {
             break;

@@ -41,6 +41,9 @@ void write(FILE *out, object *obj) {
 		case FIXNUM:
 			fprintf(out, "%ld", obj->data.fixnum.value);
 			break;
+		case FLOATNUM:
+			fprintf(out, "%f", obj->data.floatnum.value);
+			break;
 		case CHARACTER:
 			c = obj->data.character.value;
 			fprintf(out, "#\\");
@@ -97,6 +100,7 @@ void write(FILE *out, object *obj) {
             fprintf(out, "#<eof>");
             break;
 		default:
-			crash_error("cannot write unknown type");
+			fprintf(stderr, "cannot write unknown type");
+			exit(1);
 	}
 }

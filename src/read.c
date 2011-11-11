@@ -44,7 +44,8 @@ void eat_expected_string(FILE *in, char *str) {
 	while (*str != '\0') {
 		c = getc(in);
 		if (c != *str) {
-			crash_error("unexpected character");
+			fprintf(stderr, "unexpected character: %c\n", c);
+			exit(1);
 		}
 		str++;
 	}
@@ -52,7 +53,8 @@ void eat_expected_string(FILE *in, char *str) {
 
 void peek_expected_delimiter(FILE *in) {
 	if (!is_delimiter(peek(in))) {
-		crash_error("character not followed by delimiter");
+		fprintf(stderr, "character not followed by delimiter\n");
+		exit(1);
 	}
 }
 
@@ -62,7 +64,8 @@ object *read_character(FILE *in) {
 	c = getc(in);
 	switch (c) {
 		case EOF:
-			crash_error("incomplete character literal");
+			fprintf(stderr, "incomplete character literal\n");
+			exit(1);
 		case 's':
 			if(peek(in) == 'p') {
 				eat_expected_string(in, "pace");
@@ -104,13 +107,15 @@ object *read_pair(FILE *in) {
 	if (c == '.') {
 		c = peek(in);
 		if (!is_delimiter(c)) {
-			crash_error("dot not followed by delimiter");
+			fprintf(stderr, "dot not followed by delimiter\n");
+			exit(1);
 		}
 		cdr_obj = read(in);
 		eat_whitespace(in);
 		c = getc(in);
 		if (c != ')' || c!= ']') {
-			crash_error("missing trailing right paren");
+			fprintf(stderr, "missing trailing right paren\n");
+			exit(1);
 		}
 		return cons(car_obj, cdr_obj);
 	} else {
@@ -125,7 +130,12 @@ object *read(FILE *in) {
 	int i;
 	short sign = 1;
 	long num = 0;
+	long dec = 0;
+	long temp;
+	int len = 0;
+	float flnum;
 	char buffer[BUFFER_MAX];
+	short fl = 0;
 	
 	eat_whitespace(in);
 	c = getc(in);
@@ -140,7 +150,8 @@ object *read(FILE *in) {
 			case '\\':
 				return read_character(in);
 			default:
-				crash_error("unknown boolean literal");
+				fprintf(stderr, "unknown boolean literal: %c\n", c);
+				exit(1);
 		}
 	} else if (isdigit(c) || (c == '-' && isdigit(peek(in)))) {
 		if (c == '-') {
@@ -148,15 +159,41 @@ object *read(FILE *in) {
 		} else {
 			ungetc(c, in);
 		}
-		while (isdigit(c = getc(in))) {
-			num = (num * 10) + (c - '0');
+		while (isdigit(c = getc(in)) || c == '.') {
+			if (isdigit(c)) {
+				num = (num * 10) + (c - '0');
+			} else {
+				fl = 1;
+				while (isdigit(c = getc(in))) {
+					dec = (dec * 10) + (c - '0');
+				}
+				temp = dec;
+				while (temp > 0) {
+					len *= 10;
+					temp /= 10;
+				}
+				if (len != 0) {
+					flnum = (float) (num + (dec / len));
+				} else {
+					flnum = (float) (num += dec);
+				}
+				break;
+			}
 		}
+		
 		num *= sign;
-		if (is_delimiter(c)) {
+		
+		if (is_delimiter(c) && fl == 0) {
 			ungetc(c, in);
 			return make_fixnum(num);
+		} else if ((is_delimiter(c) && fl == 1) || c == 'f') {
+			if (c != 'f') {
+				ungetc(c, in);
+			}
+			return make_floatnum(num);
 		} else {
-			crash_error("number not followed by delimiter");
+			fprintf(stderr, "number not followed by delimiter: %d\n", c);
+			exit(1);
 		}
 	} else if (is_initial(c) || ((c == '+' || c == '-') && is_delimiter(peek(in)))) {
 		i = 0;
@@ -164,7 +201,8 @@ object *read(FILE *in) {
 			if (i < BUFFER_MAX - 1) {
 				buffer[i++] = c;
 			} else {
-				crash_error("symbol too long. exceed BUFFER_MAX");
+				fprintf(stderr, "symbol too long. exceed BUFFER_MAX\n");
+				exit(1);
 			}
 			c = getc(in);
 		}
@@ -173,7 +211,8 @@ object *read(FILE *in) {
 			ungetc(c, in);
 			return make_symbol(buffer);
 		} else {
-			crash_error("symbol not followed by delimiter");
+			fprintf(stderr, "symbol not followed by delimiter: %s\n", buffer);
+			exit(1);
 		}
 	} else if (c == '"') {
 		i = 0;
@@ -186,12 +225,14 @@ object *read(FILE *in) {
 				}
 			}
 			if (c == EOF) {
-				crash_error("non-terminated string literal");
+				fprintf(stderr, "non-terminated string literal\n");
+				exit(1);
 			}
 			if (i < BUFFER_MAX - 1) {
 				buffer[i++] = c;
 			} else {
-				crash_error("string too long. exceeded MAX_BUFFER");
+				fprintf(stderr, "string too long. exceeded MAX_BUFFER\n");
+				exit(1);
 			}
 		}
 		buffer[i] = '\0';
@@ -203,8 +244,9 @@ object *read(FILE *in) {
 	} else if (c == EOF) {
 		return NULL;
 	} else {
-		crash_error("bad input. Unexpected input.");
+		fprintf(stderr, "bad input. Unexpected input: %c\n", c);
+		exit(1);
 	}
-	crash_error("read illegal state");
+	fprintf(stderr, "read illegal state\n");
 	exit(1);
 }

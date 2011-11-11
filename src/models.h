@@ -8,8 +8,12 @@
 void init(void);
 
 object *alloc_object(void);
+
 object *make_fixnum(long value);
 char is_fixnum(object *obj);
+
+object *make_floatnum(float value);
+char is_floatnum(object *obj);
 
 char is_boolean(object *obj);
 char is_false(object *obj);

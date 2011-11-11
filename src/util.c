@@ -1,5 +1,6 @@
 #include "scheme.h"
 #include "models.h"
+#include "write.h"
 #include "eval.h"
 
 #define MAX_OUTPUT 1000
@@ -8,11 +9,6 @@ char is_last_exp(object *seq);
 object *first_exp(object *seq);
 object *make_begin(object *seq);
 object *make_application(object *operator, object *operands);
-
-void crash_error(char *message) {
-	fprintf(stderr, "%s\n", message);
-	exit(1);
-}
 
 char is_if(object *exp) {
 	return is_tagged_list(exp, if_symbol);
@@ -264,6 +260,10 @@ object *is_integer_proc(object *arguments) {
 	return is_fixnum(car(arguments)) ? true : false;
 }
 
+object *is_float_proc(object *arguments) {
+	return is_floatnum(car(arguments)) ? true : false;
+}
+
 object *is_char_proc(object *arguments) {
 	return is_character(car(arguments)) ? true : false;
 }
@@ -396,6 +396,14 @@ object *is_greater_than_proc(object *arguments) {
     return true;
 }
 
+object *sqrt_proc(object *arguments) {
+	if (is_fixnum(car(arguments))) {
+		return make_floatnum(sqrt((car(arguments))->data.fixnum.value));
+	} else {
+		return make_floatnum(sqrt((car(arguments))->data.floatnum.value));
+	}
+}
+
 object *cons_proc(object *arguments) {
     return cons(car(arguments), cadr(arguments));
 }
@@ -470,7 +478,7 @@ object *or_tests(object *exp) {
 }
 
 object *apply_proc(object *arguments) {
-	crash_error("illegal state: the body of the apply primitive procedure should not execute.");
+	fprintf(stderr, "illegal state: the body of the apply primitive procedure should not execute.");
 	exit(1);
 }
 
@@ -492,6 +500,22 @@ object *apply_operands(object *arguments) {
 
 object *exit_proc(object *arguments) {
 	exit(0);
+}
+
+object *time_proc(object *arguments) {
+	int bt; 
+	int st;
+	object *out;
+	double exec_time;
+
+	bt = time(NULL);
+	out = car(arguments);
+	st = time(NULL);
+	
+	exec_time = difftime(bt, st);
+	printf("%f seconds.\n", exec_time);
+
+	return out;
 }
 
 

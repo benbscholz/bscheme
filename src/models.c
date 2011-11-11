@@ -7,7 +7,8 @@ object *alloc_object(void) {
 	object *obj;
 	obj = malloc(sizeof(object));
 	if (obj == NULL) {
-		crash_error("out of memory");
+		fprintf(stderr, "out of memory\n");
+		exit(1);
 	}
 	return obj;
 }
@@ -22,6 +23,18 @@ object *make_fixnum(long value) {
 
 char is_fixnum(object *obj) {
 	return obj->type == FIXNUM;
+}
+
+object *make_floatnum(float value) {
+	object *obj;
+	obj = alloc_object();
+	obj->type = FLOATNUM;
+	obj->data.floatnum.value = value;
+	return obj;
+}
+
+char is_floatnum(object *obj) {
+	return obj->type == FLOATNUM;
 }
 
 char is_boolean(object *obj) {
@@ -55,7 +68,7 @@ object *make_string(char *value) {
 	obj->type = STRING;
 	obj->data.string.value = malloc(strlen(value) + 1);
 	if (obj->data.string.value == NULL) {
-		crash_error("out of memory");
+		fprintf(stderr, "out of memory\n");
 	}
 	strcpy(obj->data.string.value, value);
 	return obj;
@@ -114,7 +127,7 @@ object *make_symbol(char *value) {
 	obj->type = SYMBOL;
 	obj->data.symbol.value = malloc(strlen(value) + 1);
 	if (obj->data.symbol.value == NULL) {
-		crash_error("out of memory");
+		fprintf(stderr, "out of memory\n");
 	}
 	strcpy(obj->data.symbol.value, value);
 	symbol_table = cons(obj, symbol_table);

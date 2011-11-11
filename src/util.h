@@ -1,8 +1,6 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-void crash_error(char *message);
-
 char is_if(object *expression);
 object *if_predicate(object *exp);
 object *if_consequent(object *exp);
@@ -57,24 +55,30 @@ object *is_null_proc(object *arguments);
 object *is_boolean_proc(object *arguments);
 object *is_symbol_proc(object *arguments);
 object *is_integer_proc(object *arguments);
+object *is_float_proc(object *arguments);
 object *is_char_proc(object *arguments);
 object *is_string_proc(object *arguments);
 object *is_pair_proc(object *arguments);
 object *is_procedure_proc(object *arguments);
+
 object *char_to_integer_proc(object *arguments);
 object *integer_to_char_proc(object *arguments);
 object *number_to_string_proc(object *arguments);
 object *string_to_number_proc(object *arguments);
 object *symbol_to_string_proc(object *arguments);
 object *string_to_symbol_proc(object *arguments);
+
 object *add_proc(object *arguments);
 object *sub_proc(object *arguments);
 object *mul_proc(object *arguments);
 object *quotient_proc(object *arguments);
 object *remainder_proc(object *arguments);
+
 object *is_number_equal_proc(object *arguments);
 object *is_less_than_proc(object *arguments);
 object *is_greater_than_proc(object *arguments);
+object *sqrt_proc(object *arguments);
+
 object *cons_proc(object *arguments);
 object *car_proc(object *arguments);
 object *cdr_proc(object *arguments);
@@ -94,6 +98,6 @@ object *prepare_apply_operands(object *arguments);
 object *apply_operands(object *arguments);
 
 object *exit_proc(object *arguments);
-
+object *time_proc(object *arguments);
 
 #endif UTIL_H

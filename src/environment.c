@@ -55,7 +55,7 @@ object *lookup_variable_value(object *var, object *env) {
 		}
 		env = enclosing_environment(env);
 	}
-	crash_error("unbound variable");
+	fprintf(stderr, "lookup: unbound variable -> %s\n", var->data.string.value);
 	exit(1);
 }
 
@@ -79,7 +79,7 @@ void set_variable_value(object *var, object *val, object *env) {
 		}
 		env = enclosing_environment(env);
 	}
-	crash_error("unbound variable");
+	fprintf(stderr, "set: unbound variable -> %s\n", var->data.string.value);
 	exit(1);
 }
 
@@ -139,6 +139,7 @@ void populate_environment(object *env) {
     add_procedure("boolean?" , is_boolean_proc);
     add_procedure("symbol?" , is_symbol_proc);
     add_procedure("integer?" , is_integer_proc);
+    add_procedure("float?", is_float_proc);
     add_procedure("char?" , is_char_proc);
     add_procedure("string?" , is_string_proc);
     add_procedure("pair?" , is_pair_proc);
@@ -159,6 +160,7 @@ void populate_environment(object *env) {
     add_procedure("=" , is_number_equal_proc);
     add_procedure("<" , is_less_than_proc);
     add_procedure(">" , is_greater_than_proc);
+    add_procedure("sqrt", sqrt_proc);
 
     add_procedure("cons" , cons_proc);
     add_procedure("car" , car_proc);
@@ -193,6 +195,7 @@ void populate_environment(object *env) {
 
     add_procedure("error", error_proc);
     add_procedure("exit", exit_proc);
+    add_procedure("time", time_proc);
 }
 
 

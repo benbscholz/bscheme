@@ -5,9 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
+#include <time.h>
 
-typedef enum {THE_EMPTY_LIST, BOOLEAN, SYMBOL, FIXNUM, 
-			  CHARACTER, STRING, PAIR, PRIMITIVE_PROC,
+typedef enum {THE_EMPTY_LIST, BOOLEAN, SYMBOL, FIXNUM,	
+			  FLOATNUM, CHARACTER, STRING, PAIR, PRIMITIVE_PROC,
 			  COMPOUND_PROC, INPUT_PORT, OUTPUT_PORT,
               EOF_OBJECT} object_type;
 
@@ -23,6 +25,9 @@ typedef struct object {
         struct {
             long value;
         } fixnum;
+        struct {
+	        float value;
+        } floatnum;
         struct {
 	        char value;
         } character;

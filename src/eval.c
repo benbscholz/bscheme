@@ -11,6 +11,7 @@ object *eval_environment(object *arguments);
 char is_self_evaluating(object *exp) {
 	return is_boolean(exp)   ||
 		   is_fixnum(exp)    ||
+		   is_floatnum(exp)  ||
 		   is_character(exp) ||
 		   is_string(exp);
 }
@@ -186,17 +187,19 @@ tailcall:
 			exp = first_exp(exp);
 			goto tailcall;
 		} else {
-			crash_error("unknown procedure type");
+			fprintf(stderr, "unknown procedure type\n");
+			exit(1);
 		}
 	} else {
-		crash_error("cannot eval unknown expression type");
+		fprintf(stderr, "cannot eval unknown expression type\n");
+		exit(1);
 	}
-	crash_error("eval illegal state");
+	fprintf(stderr, "eval illegal state\n");
 	exit(1);
 }
 
 object *eval_proc(object *arguments) {
-	crash_error("illegal state: the body of the eval primitive procedure should not execute");
+	fprintf(stderr, "illegal state: the body of the eval primitive procedure should not execute");
 	exit(1);
 }
 
