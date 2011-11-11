@@ -41,6 +41,7 @@
 
 (define (add1 n) (+ n 1))
 (define (sub1 n) (- n 1))
+(define (sqr n) (* n n))
 
 (define (positive? n) (> n 0))
 (define (negative? n) (< n 0))
@@ -49,13 +50,13 @@
 (define (odd? n) (not (even? n)))
 
 (define (foldr f init l)
-	(cond 
-		((empty? l) init)
-		(else (f (first l) (foldr f init (rest l))))))
+	(if (empty? l)
+		init
+		(f (first l) (foldr f init (rest l)))))
 		
-(define (foldl init l)
-	(cond
-		((empty? l) init)
+(define (foldl f init l)
+	(if (empty? l)
+		init
 		(foldl f (f init (first l)) (rest l))))
 
 (define fold foldl)
@@ -80,9 +81,9 @@
 (define (flatten l)
   (filter (lambda (x) (not (empty? x)))
            (cond
-             [(empty? l) empty]
-             [(cons? (first l)) (append (flatten (first l)) (flatten (rest l)))]
-             [else (cons (first l) (flatten (rest l)))])))
+             ((empty? l) empty)
+             ((cons? (first l)) (append (flatten (first l)) (flatten (rest l))))
+             (else (cons (first l) (flatten (rest l)))))))
 
 (define (reverse l)
 	(foldl (flip cons) empty l))
@@ -107,7 +108,19 @@
 					
 (define (drop l n) 
 	(take (reverse l) n))
-		
+	
+(define test (list 1 2 3 4 5 6 7 8 9
+				   10 11 12 13 14 15
+				   16 17 18 19 20 21
+				   22 23 24 25 26 27
+				   28 29 30 31 32 33
+				   34 35 36 37 38 39
+				   40 41 42 43 44 45
+				   46 47 48 49 50 51
+				   52 53 54 55 56 57
+				   58 59 60 61 62 63
+				   64 65 66 67 68 69))
+				   
 	
 'stdlib-loaded
 		
