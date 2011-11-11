@@ -195,6 +195,7 @@ void populate_environment(object *env) {
 
     add_procedure("error", error_proc);
     add_procedure("exit", exit_proc);
+    add_procedure("reload", reload_proc);
     add_procedure("time", time_proc);
 }
 

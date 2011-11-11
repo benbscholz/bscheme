@@ -1,6 +1,7 @@
 #include "scheme.h"
 #include "models.h"
 #include "write.h"
+#include "io.h"
 #include "eval.h"
 
 #define MAX_OUTPUT 1000
@@ -500,6 +501,12 @@ object *apply_operands(object *arguments) {
 
 object *exit_proc(object *arguments) {
 	exit(0);
+}
+
+object *reload_proc(object *arguments) {
+	write(stdout, load_proc(cons(make_string("../lib/stdlib.ss"), the_empty_list)));
+	printf("\n");	
+	return ok_symbol;
 }
 
 object *time_proc(object *arguments) {

@@ -98,6 +98,7 @@ object *prepare_apply_operands(object *arguments);
 object *apply_operands(object *arguments);
 
 object *exit_proc(object *arguments);
+object *reload_proc(object *arguments);
 object *time_proc(object *arguments);
 
 #endif UTIL_H
