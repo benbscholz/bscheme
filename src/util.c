@@ -2,6 +2,7 @@
 #include "models.h"
 #include "write.h"
 #include "io.h"
+#include "read.h"
 #include "eval.h"
 
 #define MAX_OUTPUT 1000
@@ -309,20 +310,35 @@ object *string_to_symbol_proc(object *arguments) {
     return make_symbol((car(arguments))->data.string.value);
 }
 
+/* this is a horrifying hack */
 object *string_to_list_proc(object *arguments) {
-	const char *str = arguments->data.string.value;
-	object *list = the_empty_list;
-	object *curr;
-	int pos;
-	
-	for (pos = strlen(str); str > 0; --str) {
-		list = cons(make_character(str[pos - 1]), list);
-		
-		while (!is_the_empty_list(curr)) {
-			
-		}
+	FILE *temp = fopen("temp", "w");
+	char *str = car(arguments)->data.string.value;
+	char exp[BUFFER_MAX];
+	int len = strlen(str);
+	int i = 0;
+	int j = 0;
+	object *pair;
+
+	while (i < len) {
+		exp[j++] = '#';
+		exp[j++] = '\\';
+		exp[j++] = str[i];
+		exp[j++] = ' ';
+		i++;
 	}
-	return list;
+
+	exp[j++] = ')';
+	exp[j] = '\0';
+	fputs(exp, temp);
+	fflush(temp);
+	fclose(temp);
+	temp = fopen("temp", "r+");
+	pair = read_pair(temp);
+	fclose(temp);
+	remove("temp");
+
+	return pair;
 }
 
 object *list_to_string_proc(object *arguments) {
@@ -330,10 +346,9 @@ object *list_to_string_proc(object *arguments) {
 	object *list = car(arguments);
 	int i;
 	
-	while (!is_the_empty_list(list) && i < BUFFER_MAX) {
+	for (i = 0; !is_the_empty_list(list) && i < BUFFER_MAX; i++) {
 		str[i] = car(list)->data.character.value;
 		list = cdr(list);
-		i++;
 	}
 	str[i] = '\0';
 	return make_string(str);
