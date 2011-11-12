@@ -330,9 +330,11 @@ object *string_to_list_proc(object *arguments) {
 
 	exp[j++] = ')';
 	exp[j] = '\0';
+	
 	fputs(exp, temp);
 	fflush(temp);
 	fclose(temp);
+	
 	temp = fopen("temp", "r+");
 	pair = read_pair(temp);
 	fclose(temp);
@@ -372,6 +374,32 @@ object *sub_proc(object *arguments) {
         result -= (car(arguments))->data.fixnum.value;
     }
     return make_fixnum(result);
+}
+
+object *max_proc(object *arguments) {
+	long max;
+	max = (car(arguments))->data.fixnum.value;
+	
+	while(!is_the_empty_list(arguments = cdr(arguments))) {
+		if (max < car(arguments)->data.fixnum.value) {
+			max = car(arguments)->data.fixnum.value;
+		} 
+	}
+	
+	return make_fixnum(max);
+}
+
+object *min_proc(object *arguments) {
+	long min;
+	min = (car(arguments))->data.fixnum.value;
+	
+	while(!is_the_empty_list(arguments = cdr(arguments))) {
+		if (min > car(arguments)->data.fixnum.value) {
+			min = car(arguments)->data.fixnum.value;
+		} 
+	}
+	
+	return make_fixnum(min);
 }
 
 object *mul_proc(object *arguments) {

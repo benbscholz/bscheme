@@ -75,6 +75,8 @@ object *sub_proc(object *arguments);
 object *mul_proc(object *arguments);
 object *quotient_proc(object *arguments);
 object *remainder_proc(object *arguments);
+object *max_proc(object *arguments);
+object *min_proc(object *arguments);
 
 object *is_number_equal_proc(object *arguments);
 object *is_less_than_proc(object *arguments);

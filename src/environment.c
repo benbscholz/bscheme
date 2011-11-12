@@ -163,6 +163,8 @@ void populate_environment(object *env) {
     add_procedure("<" , is_less_than_proc);
     add_procedure(">" , is_greater_than_proc);
     add_procedure("sqrt", sqrt_proc);
+    add_procedure("max", max_proc);
+    add_procedure("min", min_proc);
 
     add_procedure("cons" , cons_proc);
     add_procedure("car" , car_proc);
